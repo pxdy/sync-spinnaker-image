@@ -49,5 +49,6 @@ jobs:
           echo $REGISTRY/halyard:stable > image
           for i in `cat service` ; do echo  $i:` cat $VERSION.json | jq -r .services.\"$i\".version` >> image; done
           for i in `cat dependencies` ; do echo  $i:` cat $VERSION.json | jq -r .dependencies.\"$i\".version` >> image; done
+          cat image
           docker login -u 17685753039 -p abc123456 registry.cn-beijing.aliyuncs.com
           for i in `cat image | grep -v null`; do docker pull $REGISTRY/$i ;docker tag $REGISTRY/$i $REGISTRYCN/$i; docker push $REGISTRY-CN/$i ;done
