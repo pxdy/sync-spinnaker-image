@@ -43,7 +43,7 @@ jobs:
           cat $VERSION.json | jq .dependencies | jq keys | sed 's#,##;s#"##g;s#\[##;s#\]##' > dependencies
           
           REGISTRY=$(jq -r .artifactSources.dockerRegistry $VERSION.json)
-          REGISTRY-CN=registry.cn-beijing.aliyuncs.com/spinnaker-community
+          REGISTRY-CN=$(echo "registry.cn-beijing.aliyuncs.com/spinnaker-community")
           echo $REGISTRY $REGISTRY-CN
           
           echo $REGISTRY/halyard:stable > image
