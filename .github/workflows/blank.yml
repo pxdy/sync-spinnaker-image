@@ -28,7 +28,7 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: install halyard & push image to aliyun
         run: |
-          docker run -d -p 8084:8084 -p 9000:9000 --name halyard --rm -v ~/.hal:/home/spinnaker/.hal us-docker.pkg.dev/spinnaker-community/docker/halyard:stable
+          docker run -d --name halyard --rm -v ~/.hal:/home/spinnaker/.hal us-docker.pkg.dev/spinnaker-community/docker/halyard:stable
           VERSION=$(curl -s https://spinnaker.io/community/releases/versions/ | grep 'id="version-' | head -1 | sed -e 's/\(<[^<][^<]*>\)//g; /^$/d' | cut -d' ' -f2)
           docker exec halyard hal version bom $VERSION -o json > $VERSION.json
           REGISTRY=$(jq -r .artifactSources.dockerRegistry $VERSION.json)
