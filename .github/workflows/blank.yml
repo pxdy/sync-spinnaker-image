@@ -29,13 +29,21 @@ jobs:
       - name: install halyard & get image version & pull & push
         run: |
           docker run -d --name halyard us-docker.pkg.dev/spinnaker-community/docker/halyard:stable
-          sleep 20
-          VERSION=$(curl -s https://spinnaker.io/community/releases/versions/ | grep 'id="version-' | head -1 | sed -e 's/\(<[^<][^<]*>\)//g; /^$/d' | cut -d' ' -f2)
-          docker exec halyard hal version bom $VERSION -o json > $VERSION.json
-          REGISTRY=$(jq -r .artifactSources.dockerRegistry $VERSION.json)
-          REGISTRY-CN=registry.cn-beijing.aliyuncs.com/mirror-k8s-io/spinnaker
+          echo "waiting for halyard ready"
+          sleep 30
+          
+          echo "get latest spinnaker version"
+          VERION=`docker exec  halyard hal version list -q -o json | jq -r .latestSpinnaker`
+          
+          echo "get image version"
+          docker exec halyard hal version bom $VERSION -q -o json > $VERSION.json
+
           cat $VERSION.json | jq .services | jq keys | sed 's#,##;s#"##g;s#\[##;s#\]##' > service
           cat $VERSION.json | jq .dependencies | jq keys | sed 's#,##;s#"##g;s#\[##;s#\]##' > dependencies
+          
+          REGISTRY=$(jq -r .artifactSources.dockerRegistry $VERSION.json)
+          REGISTRY-CN=registry.cn-beijing.aliyuncs.com/mirror-k8s-io/spinnaker
+          
           echo $REGISTRY/halyard:stable > image
           for i in `cat service` ; do echo  $i:` cat $VERSION.json | jq -r .services.\"$i\".version` >> image; done
           for i in `cat dependencies` ; do echo  $i:` cat $VERSION.json | jq -r .dependencies.\"$i\".version` >> image; done
