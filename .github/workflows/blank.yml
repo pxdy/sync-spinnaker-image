@@ -46,7 +46,7 @@ jobs:
           REGISTRYCN=registry.cn-beijing.aliyuncs.com/spinnaker-community
           echo $REGISTRY $REGISTRYCN
           
-          echo $REGISTRY/halyard:stable > image
+          echo halyard:stable > image
           for i in `cat service` ; do echo  $i:` cat $VERSION.json | jq -r .services.\"$i\".version` >> image; done
           for i in `cat dependencies` ; do echo  $i:` cat $VERSION.json | jq -r .dependencies.\"$i\".version` >> image; done
           cat image
