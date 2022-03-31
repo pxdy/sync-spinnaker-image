@@ -33,7 +33,8 @@ jobs:
           sleep 30
           
           echo "get latest spinnaker version"
-          VERION=`docker exec  halyard hal version list -q -o json | jq -r .latestSpinnaker`
+          docker exec  halyard hal version list -q -o json > VERSION
+          jq -r .latestSpinnaker VERSION
           
           echo "get image version"
           docker exec halyard hal version bom $VERSION -q -o json > $VERSION.json
