@@ -42,7 +42,7 @@ jobs:
           cat $VERSION.json | jq .services | jq keys | sed 's#,##;s#"##g;s#\[##;s#\]##' > service
           cat $VERSION.json | jq .dependencies | jq keys | sed 's#,##;s#"##g;s#\[##;s#\]##' > dependencies
           
-          REGISTRY=$(jq -r .artifactSources.dockerRegistry $VERSION.json)
+          REGISTRY=us-docker.pkg.dev/spinnaker-community/docker
           REGISTRYCN=registry.cn-beijing.aliyuncs.com/spinnaker-community
           echo $REGISTRY $REGISTRYCN
           
