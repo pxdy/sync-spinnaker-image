@@ -34,7 +34,7 @@ jobs:
           
           echo "get latest spinnaker version"
           docker exec  halyard hal version list -q -o json > VERSION
-          jq -r .latestSpinnaker VERSION
+          VERSION=`jq -r .latestSpinnaker VERSION`
           
           echo "get image version"
           docker exec halyard hal version bom $VERSION -q -o json > $VERSION.json
