@@ -42,7 +42,8 @@ jobs:
           cat $VERSION.json | jq .services | jq keys | sed 's#,##;s#"##g;s#\[##;s#\]##' > service
           cat $VERSION.json | jq .dependencies | jq keys | sed 's#,##;s#"##g;s#\[##;s#\]##' > dependencies
           
-          REGISTRY=us-docker.pkg.dev/spinnaker-community/docker
+          REGISTRY1=us-docker.pkg.dev/spinnaker-community/docker
+          REGISTRY2=gcr.io/spinnaker-community/docker
           REGISTRYCN=registry.cn-beijing.aliyuncs.com/spinnaker-community
           echo $REGISTRY $REGISTRYCN
           
@@ -51,4 +52,4 @@ jobs:
           for i in `cat dependencies` ; do echo  $i:` cat $VERSION.json | jq -r .dependencies.\"$i\".version` >> image; done
           cat image
           docker login -u 17685753039 -p abc123456 registry.cn-beijing.aliyuncs.com
-          for i in `cat image | grep -v null | grep -v monitoring-third-party`; do docker pull $REGISTRY/$i ;docker tag $REGISTRY/$i $REGISTRYCN/$i; docker push $REGISTRYCN/$i ;done
+          for i in `cat image | grep -v null`; do docker pull $REGISTRY1/$i || docker pull $REGISTRY2/$i ;docker tag $REGISTRY1/$i $REGISTRYCN/$i || docker tag $REGISTRY2/$i $REGISTRYCN/$i; docker push $REGISTRYCN/$i ;done
