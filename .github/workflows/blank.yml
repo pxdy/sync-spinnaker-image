@@ -43,11 +43,11 @@ jobs:
           cat $VERSION.json | jq .dependencies | jq keys | sed 's#,##;s#"##g;s#\[##;s#\]##' > dependencies
           
           REGISTRY=$(jq -r .artifactSources.dockerRegistry $VERSION.json)
-          REGISTRY-CN=$(echo "registry.cn-beijing.aliyuncs.com/spinnaker-community")
-          echo $REGISTRY $REGISTRY-CN
+          REGISTRYCN=registry.cn-beijing.aliyuncs.com/spinnaker-community
+          echo $REGISTRY $REGISTRYCN
           
           echo $REGISTRY/halyard:stable > image
           for i in `cat service` ; do echo  $i:` cat $VERSION.json | jq -r .services.\"$i\".version` >> image; done
           for i in `cat dependencies` ; do echo  $i:` cat $VERSION.json | jq -r .dependencies.\"$i\".version` >> image; done
           docker login -u 17685753039 -p abc123456 registry.cn-beijing.aliyuncs.com
-          for i in `cat image | grep -v null`; do docker pull $REGISTRY/$i ;docker tag $REGISTRY/$i $REGISTRY-CN/$i; docker push $REGISTRY-CN/$i ;done
+          for i in `cat image | grep -v null`; do docker pull $REGISTRY/$i ;docker tag $REGISTRY/$i $REGISTRYCN/$i; docker push $REGISTRY-CN/$i ;done
