@@ -26,16 +26,16 @@ jobs:
       - uses: actions/checkout@v3
 
       # Runs a set of commands using the runners shell
-      - name: install halyard
+      - name: install halyard & push image to aliyun
         run: |
-          curl -sfL https://raw.githubusercontent.com/spinnaker/halyard/master/install/debian/InstallHalyard.sh | bash -
+          docker run -d -p 8084:8084 -p 9000:9000 --name halyard --rm -v ~/.hal:/home/spinnaker/.hal us-docker.pkg.dev/spinnaker-community/docker/halyard:stable
           VERSION=$(curl -s https://spinnaker.io/community/releases/versions/ | grep 'id="version-' | head -1 | sed -e 's/\(<[^<][^<]*>\)//g; /^$/d' | cut -d' ' -f2)
-          hal version bom $VERSION -o json > $VERSION.json
+          docker exec halyard hal version bom $VERSION -o json > $VERSION.json
           REGISTRY=$(jq -r .artifactSources.dockerRegistry $VERSION.json)
           REGISTRY-CN=registry.cn-beijing.aliyuncs.com/mirror-k8s-io/spinnaker
           cat $VERSION.json | jq .services | jq keys | sed 's#,##;s#"##g;s#\[##;s#\]##' > service
           echo $REGISTRY/halyard:stable > image
           for i in `cat service` ; do echo  $i:` cat $VERSION.json | jq -r .services.\"$i\".version` >> image; done
           docker login -u 17685753039 -p abc123456 registry.cn-beijing.aliyuncs.com
-          for i in `cat image`; do docker pull $REGISTRY/$i ;docker tag $REGISTRY/$i $REGISTRY-CN/$i; docker push $REGISTRY-CN/$i ;done
+          for i in `cat image | grep -v null`; do docker pull $REGISTRY/$i ;docker tag $REGISTRY/$i $REGISTRY-CN/$i; docker push $REGISTRY-CN/$i ;done
           
