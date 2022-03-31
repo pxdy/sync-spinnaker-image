@@ -1,0 +1,41 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      # Runs a set of commands using the runners shell
+      - name: install halyard
+        run: |
+          curl -sfL https://raw.githubusercontent.com/spinnaker/halyard/master/install/debian/InstallHalyard.sh | bash -
+          VERSION=$(curl -s https://spinnaker.io/community/releases/versions/ | grep 'id="version-' | head -1 | sed -e 's/\(<[^<][^<]*>\)//g; /^$/d' | cut -d' ' -f2)
+          hal version bom $VERSION -o json > $VERSION.json
+          REGISTRY=$(jq -r .artifactSources.dockerRegistry $VERSION.json)
+          REGISTRY-CN=registry.cn-beijing.aliyuncs.com/mirror-k8s-io/spinnaker
+          cat $VERSION.json | jq .services | jq keys | sed 's#,##;s#"##g;s#\[##;s#\]##' > service
+          echo $REGISTRY/halyard:stable > image
+          for i in `cat service` ; do echo  $i:` cat $VERSION.json | jq -r .services.\"$i\".version` >> image; done
+          docker login -u 17685753039 -p abc123456 registry.cn-beijing.aliyuncs.com
+          for i in `cat image`; do docker pull $REGISTRY/$i ;docker tag $REGISTRY/$i $REGISTRY-CN/$i; docker push $REGISTRY-CN/$i ;done
+          
