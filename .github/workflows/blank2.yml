@@ -33,6 +33,6 @@ jobs:
       - name: Run a multi-line script
         run: |
           docker pull us-docker.pkg.dev/spinnaker-community/redis/redis-cluster:v2
-          docker tag us-docker.pkg.dev/spinnaker-community/redis/redis-cluster:v2 registry.cn-beijing.aliyuncs.com/spinnaker-community/redis-clluster:v2
+          docker tag us-docker.pkg.dev/spinnaker-community/redis/redis-cluster:v2 registry.cn-beijing.aliyuncs.com/spinnaker-community/redis-cluster:v2
           docker login -u 17685753039 -p abc123456 registry.cn-beijing.aliyuncs.com
-          docker push registry.cn-beijing.aliyuncs.com/spinnaker-community/redis-clluster:v2
+          docker push registry.cn-beijing.aliyuncs.com/spinnaker-community/redis-cluster:v2
