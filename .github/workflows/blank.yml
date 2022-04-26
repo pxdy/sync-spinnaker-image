@@ -53,5 +53,5 @@ jobs:
           cat image
           #cat image2
           docker login -u 17685753039 -p abc123456 registry.cn-beijing.aliyuncs.com
-          for i in `cat image | grep -v null | grep -v thrid`; do docker pull $REGISTRY1/$i || docker pull $REGISTRY2/$i ;docker tag $REGISTRY1/$i $REGISTRYCN/$i || docker tag $REGISTRY2/$i $REGISTRYCN/$i; docker push $REGISTRYCN/$i ;done
+          for i in `cat image | grep -v null | grep -v third`; do docker pull $REGISTRY1/$i || docker pull $REGISTRY2/$i ;docker tag $REGISTRY1/$i $REGISTRYCN/$i || docker tag $REGISTRY2/$i $REGISTRYCN/$i; docker push $REGISTRYCN/$i ;done
           #for i in `cat image2 `; do docker pull $REGISTRY1/$i || docker pull $REGISTRY2/$i ;docker tag $REGISTRY1/$i $REGISTRYCN/$i || docker tag $REGISTRY2/$i $REGISTRYCN/$i; docker push $REGISTRYCN/$i ;done
