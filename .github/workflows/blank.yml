@@ -30,7 +30,7 @@ jobs:
         run: |
           docker run -d --name halyard us-docker.pkg.dev/spinnaker-community/docker/halyard:stable
           echo "waiting for halyard ready"
-          sleep 20
+          sleep 30
           
           echo "get latest spinnaker version"
           docker exec  halyard hal version list -q -o json > VERSION
