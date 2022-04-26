@@ -51,7 +51,7 @@ jobs:
           for i in `cat service` ; do echo  $i:` cat $VERSION.json | jq -r .services.\"$i\".version` >> image; done
           #for i in `cat dependencies` ; do echo  $i:` cat $VERSION.json | jq -r .dependencies.\"$i\".version` >> image2; done
           cat image
-          cat image2
+          #cat image2
           docker login -u 17685753039 -p abc123456 registry.cn-beijing.aliyuncs.com
           for i in `cat image1 | grep -v null | grep -v thrid`; do docker pull $REGISTRY1/$i || docker pull $REGISTRY2/$i ;docker tag $REGISTRY1/$i $REGISTRYCN/$i || docker tag $REGISTRY2/$i $REGISTRYCN/$i; docker push $REGISTRYCN/$i ;done
           #for i in `cat image2 `; do docker pull $REGISTRY1/$i || docker pull $REGISTRY2/$i ;docker tag $REGISTRY1/$i $REGISTRYCN/$i || docker tag $REGISTRY2/$i $REGISTRYCN/$i; docker push $REGISTRYCN/$i ;done
