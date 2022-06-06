@@ -28,7 +28,7 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: install halyard & get image version & pull & push
         run: |
-          docker run -d --name halyard us-docker.pkg.dev/spinnaker-community/docker/halyard:1.45.0
+          docker run -d --name halyard us-docker.pkg.dev/spinnaker-community/docker/halyard:latest
           echo "waiting for halyard ready"
           sleep 30
           
@@ -47,7 +47,7 @@ jobs:
           REGISTRYCN=registry.cn-beijing.aliyuncs.com/spinnaker-community
           echo $REGISTRY $REGISTRYCN
           
-          echo halyard:1.45.0 > image
+          echo halyard:latest > image
           for i in `cat service` ; do echo  $i:` cat $VERSION.json | jq -r .services.\"$i\".version` >> image; done
           #for i in `cat dependencies` ; do echo  $i:` cat $VERSION.json | jq -r .dependencies.\"$i\".version` >> image2; done
           cat image
